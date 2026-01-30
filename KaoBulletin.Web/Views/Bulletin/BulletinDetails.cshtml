@@ -1,0 +1,54 @@
+﻿@using KaoBulletin.Shared.Dtos
+@model BulletinDto
+
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Head {
+    <style>
+        .bulletin-container {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .bulletin-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .meta-info {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+}
+
+@section Main {
+    <div class="container bulletin-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">公告列表</a></li>
+                <li class="breadcrumb-item active">@Model.Title</li>
+            </ol>
+        </nav>
+
+        <h1 class="display-5 fw-bold">@Model.Title</h1>
+        <div class="meta-info mb-4">
+            <span>發布日期：@Model.CreatedAt.ToString("yyyy/MM/dd HH:mm")</span>
+        </div>
+        <hr />
+
+        <div class="bulletin-content">
+            @* 這裡會渲染出 <img src="/uploads/images/..."> *@
+            @Html.Raw(Model.Content)
+        </div>
+
+        <div class="mt-5">
+            <a asp-action="Index" class="btn btn-outline-secondary">返回列表</a>
+        </div>
+    </div>
+}

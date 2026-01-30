@@ -1,0 +1,88 @@
+﻿@using KaoBulletin.Shared.Dtos
+@model CreateBulletinDto
+
+@{
+    ViewData["Title"] = "新增公告";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Head {
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.css" />
+    <style>
+        /* 調整編輯器框高度 */
+        .ck-editor__editable_inline {
+            min-height: 400px;
+        }
+    </style>
+}
+
+@section Main {
+    <div class="container mt-4">
+        <h2>新增公告</h2>
+        <hr />
+        <div class="row">
+            <div class="col-md-8">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">公告標題</label>
+                        <input asp-for="Title" class="form-control" placeholder="請輸入標題..." />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Summary" class="form-label">摘要 (選填)</label>
+                        <input asp-for="Summary" class="form-control" placeholder="簡短說明..." />
+                        <span asp-validation-for="Summary" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Content" class="form-label">內容 (HTML)</label>
+                        @* 手動加上 id="Content" 以確保 CKEditor 腳本能抓到它 *@
+    <textarea asp-for="Content" id="Content" class="form-control" rows="10" placeholder="請輸入公告內容..."></textarea>                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">發布公告</button>
+                        <a asp-action="Index" class="btn btn-secondary">返回列表</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @* 使用最穩定的 Classic Build CDN *@
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.0.1/classic/ckeditor.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 檢查 ClassicEditor 是否成功載入
+            if (typeof ClassicEditor !== 'undefined') {
+        ClassicEditor
+            .create(document.querySelector('#Content'), {
+                toolbar: [
+                    'heading', '|', 'bold', 'italic', 'link',
+                    'uploadImage',
+                    'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo'
+                ],
+                // 修正點：使用 simpleUpload 或是確保 ckfinder 的回傳對接
+                ckfinder: {
+                    uploadUrl: '/api/ApiUploadImage/upload'
+                }
+            })
+            .then(editor => {
+                console.log('CKEditor 5 已啟用圖片上傳！ ');
+            });
+            } else {
+                console.error('無法從 CDN 載入 CKEditor，請檢查網路連線或更換 CDN 網址。');
+            }
+        });
+    </script>
+}

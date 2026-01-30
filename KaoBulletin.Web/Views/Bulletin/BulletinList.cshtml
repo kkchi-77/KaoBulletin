@@ -1,0 +1,55 @@
+﻿@using KaoBulletin.Shared.Dtos
+@model IEnumerable<BulletinDto>
+
+@{
+    ViewData["Title"] = "公告列表";
+    // 假設 Layout 在 Shared 下，依專案實際情況調整
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Head {
+    <style>
+        .bulletin-date { color: #666; font-size: 0.9em; }
+    </style>
+}
+
+@section Main {
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>最新公告</h2>
+            <a asp-action="Create" class="btn btn-success">
+                <i class="bi bi-plus-lg"></i> 新增公告
+            </a>
+        </div>
+        <hr />
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="list-group">
+                @foreach (var item in Model)
+                {
+                    @* 點擊整個區塊跳轉到詳情頁 *@
+                    <a asp-action="Details" asp-route-id="@item.Id" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">@item.Title</h5>
+                            <small class="bulletin-date">@item.CreatedAt.ToString("yyyy/MM/dd HH:mm")</small>
+                        </div>
+                        <p class="mb-1">@item.Summary</p>
+                        <small class="text-muted">點擊查看詳情</small>
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">目前沒有任何公告。</div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script>
+        // 這裡可以放列表專用的 JS
+        console.log("Bulletin List Loaded");
+    </script>
+}
